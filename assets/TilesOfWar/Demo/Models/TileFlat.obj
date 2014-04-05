@@ -1,0 +1,15 @@
+# Blender v2.66 (sub 1) OBJ File: 'TileFlat.blend'
+# www.blender.org
+mtllib TileFlat.mtl
+o Cube
+v 2.000001 0.000000 -1.999999
+v 1.999999 0.000000 2.000001
+v -2.000001 0.000000 1.999999
+v -2.000000 0.000000 -2.000000
+vt 0.497500 0.504014
+vt 0.495986 0.993500
+vt 0.006500 0.993986
+vt 0.008014 0.504500
+usemtl Material
+s off
+f 1/1 4/2 3/3 2/4
