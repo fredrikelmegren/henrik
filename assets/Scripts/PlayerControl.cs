@@ -16,7 +16,7 @@ public class PlayerControl : MonoBehaviour
 	private Animator anim;					// Reference to the player's animator component.
 
 	private GameObject player;
-	private float range;
+//	private float range;
 
 	public GameObject wire;
 
@@ -50,7 +50,7 @@ public class PlayerControl : MonoBehaviour
         if ( hit )
         {
             player = GameObject.FindWithTag( "Player" );
-            range = (Vector2.Distance( player.transform.position, hit.collider.gameObject.transform.position ));
+//          range = (Vector2.Distance( player.transform.position, hit.collider.gameObject.transform.position ));
         }
 		
 		if (Input.GetMouseButtonDown(0))
