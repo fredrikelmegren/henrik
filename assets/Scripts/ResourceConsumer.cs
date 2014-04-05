@@ -14,7 +14,7 @@ public class ResourceConsumer : MonoBehaviour {
 
 		foreach(Collider2D c in currentTile){
 
-			if(c.gameObject.layer == 14 && c.collider2D.gameObject.GetComponent<ResourceAgent>() && storedResources < bucketSize){
+			if(c.gameObject.layer == 14 && storedResources < bucketSize){
 
 				storedResources = storedResources + c.collider2D.gameObject.GetComponent<ResourceAgent>().resources;
 				Debug.Log("Recived: " + c.gameObject.name);
