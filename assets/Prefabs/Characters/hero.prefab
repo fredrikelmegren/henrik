@@ -206,10 +206,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 850f7e43efdce9d4f86d5e788c7b8712, type: 3}
+  m_Script: {fileID: 11500000, guid: 31e8b1db93a676c46949ca28e6ea651d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TestWalls: []
+  ViewRadiusInTiles: 5
+  PreviousRadiusInTiles: 5
+  HasChanged: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
