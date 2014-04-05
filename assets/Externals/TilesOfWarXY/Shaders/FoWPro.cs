@@ -31,14 +31,14 @@ public class FoWPro : PostEffectsBase
         return isSupported;
     }
 
-    public void SetValues(Texture2D texture, float minX, float minZ, float maxX, float maxZ)
+    public void SetValues(Texture2D texture, float minX, float minY, float maxX, float maxY)
     {
         Material.SetTexture("_FogTex", texture);
 
         Material.SetFloat("_minX", minX);
         Material.SetFloat("_maxX", maxX);
-        Material.SetFloat("_minZ", minZ);
-        Material.SetFloat("_maxZ", maxZ);
+        Material.SetFloat("_minZ", minY);
+        Material.SetFloat("_maxZ", maxY);
 
         _isInitialized = true;
     }

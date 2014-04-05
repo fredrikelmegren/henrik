@@ -12,7 +12,7 @@ public class FoWPlayerUnit : MonoBehaviour
     public short PreviousTileX = -1;    // used to know when we move (to update fog)
         
     [HideInInspector]
-    public short PreviousTileZ = -1;    // used to know when we move (to update fog)
+    public short PreviousTileY = -1;    // used to know when we move (to update fog)
 
     [HideInInspector]
     public byte PreviousRadiusInTiles = 5;  // used to know when our radius changes (to update fog)
