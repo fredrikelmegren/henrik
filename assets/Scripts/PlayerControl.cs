@@ -20,10 +20,13 @@ public class PlayerControl : MonoBehaviour
 
 	public GameObject wire;
 
+    static Transform ballContainer;
+
 	void Awake()
 	{
 		// Setting up references.
 		anim = GetComponent<Animator>();
+        ballContainer = new GameObject( "Balls" ).transform;
 	}
 
 
@@ -47,10 +50,9 @@ public class PlayerControl : MonoBehaviour
 		player = GameObject.FindWithTag("Player");
 		range = (Vector2.Distance(player.transform.position, hit.collider.gameObject.transform.position));
 
-		if (Input.GetMouseButtonDown(0)){
-
-			Instantiate(ball, fireFrom.transform.position, Quaternion.identity);
-		
+		if (Input.GetMouseButtonDown(0))
+        {
+            ((GameObject)Instantiate( ball, fireFrom.transform.position, Quaternion.identity )).transform.parent = ballContainer;
 		}
 
 

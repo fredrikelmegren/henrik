@@ -9,8 +9,14 @@ public class Breakable : MonoBehaviour {
 	public float breakLimit;
 	private Vector2 debrisForce;
 
-	void Start(){
+    static Transform breakablesContainer;
 
+    void Start()
+    {
+        if (!breakablesContainer)
+        {
+            breakablesContainer = new GameObject( "Breakables" ).transform;
+        }
 
 	}
 
@@ -24,7 +30,8 @@ public class Breakable : MonoBehaviour {
 			if (force >= breakLimit ) {
 
 				GameObject debrisInstantiate = (GameObject) Instantiate (debrisobject, gameObject.transform.position, Random.rotation);
-				debrisInstantiate.transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
+                debrisInstantiate.transform.parent = breakablesContainer;
+                debrisInstantiate.transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
 				debrisForce = new Vector2 ((Random.Range (100, -10)), (Random.Range (100, -100)));
 				debrisInstantiate.rigidbody2D.AddForce(debrisForce);
 				Destroy (gameObject);

@@ -9,12 +9,16 @@ public class ResourceGenerator : MonoBehaviour {
 	public float finiteResource;			// How much resource this source can give out by its own
 	public float maxResources;				// The max amount of resources this gameObject can hold
 	public GameObject resource;				// What kind of gameObject should be generated as a gameObject
-	
+
+    static Transform resourceContainer;
 
 	void Start(){
 
 		StartCoroutine(GenerateResource());
-	
+        if ( !resourceContainer )
+        {
+            resourceContainer = new GameObject( "Energy" ).transform;
+        }
 	}
 
 	public IEnumerator GenerateResource (){
@@ -33,7 +37,8 @@ public class ResourceGenerator : MonoBehaviour {
 
 	void InstanceResource () {
 
-		GameObject spawnedResource = (GameObject) Instantiate(resource, gameObject.transform.position, Quaternion.identity);
+        GameObject spawnedResource = (GameObject)Instantiate( resource, gameObject.transform.position, Quaternion.identity );
+        spawnedResource.transform.parent = resourceContainer;
 		spawnedResource.GetComponent<ResourceAgent>().resources = outputValue;
 		finiteResource = finiteResource - outputValue;
 		finiteResource = Mathf.Clamp (finiteResource, 0f, maxResources);
