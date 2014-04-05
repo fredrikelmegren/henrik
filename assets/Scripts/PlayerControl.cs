@@ -46,10 +46,13 @@ public class PlayerControl : MonoBehaviour
 		
 
 		RaycastHit2D hit = Physics2D.Raycast (mousePositionInWorld, Vector2.zero);
-		
-		player = GameObject.FindWithTag("Player");
-		range = (Vector2.Distance(player.transform.position, hit.collider.gameObject.transform.position));
 
+        if ( hit )
+        {
+            player = GameObject.FindWithTag( "Player" );
+            range = (Vector2.Distance( player.transform.position, hit.collider.gameObject.transform.position ));
+        }
+		
 		if (Input.GetMouseButtonDown(0))
         {
             ((GameObject)Instantiate( ball, fireFrom.transform.position, Quaternion.identity )).transform.parent = ballContainer;

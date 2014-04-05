@@ -13,7 +13,7 @@ public class FoWManager : MonoBehaviour
     public FoWType FogType = FoWType.Projector;
 
     public Vector3 WorldMin = new Vector3(0, 0, 0);         // minimum world coordinates that should be "fogged"
-    public Vector3 WorldMax = new Vector3(256, 256, 32);    // maximum world coordinates that should be "fogged"
+    public Vector3 WorldMax = new Vector3(256, 32, 256);    // maximum world coordinates that should be "fogged"
     public float WorldUnitsPerTileSide = 1f;                // number of Unity world units per tile
 
     public int TextureResolution = 1;                       // 1 - 4, pixels per tile (lower = less memory, higher = less blurry)
@@ -52,7 +52,7 @@ public class FoWManager : MonoBehaviour
     private int _numTilesX;             // calculated play field size in tiles (width)
 
     [SerializeField, HideInInspector]
-    private int _numTilesY;             // calculated play field size in tiles (height)
+    private int _numTilesZ;             // calculated play field size in tiles (height)
 
     [SerializeField, HideInInspector]
     private Projector _projector;       // cache of our projector instance
@@ -113,7 +113,7 @@ public class FoWManager : MonoBehaviour
     {
         FogType = FoWType.Projector;
         WorldMin = new Vector3(0, 0, 0);
-        WorldMax = new Vector3(256, 256, 32);
+        WorldMax = new Vector3(256, 32, 256);
         WorldUnitsPerTileSide = 1f;
         TextureResolution = 1;
         VisibleLightStrengthMax = 1f;
@@ -179,9 +179,9 @@ public class FoWManager : MonoBehaviour
         _projector.enabled = enableFoW;
     }
 
-    public void SetTileExplored(int tileX, int tileY, bool explored)
+    public void SetTileExplored(int tileX, int tileZ, bool explored)
     {
-        var tile = GetTile(tileX, tileY);
+        var tile = GetTile(tileX, tileZ);
         if (tile != null)
         {
             if (!tile.IsVisible)
@@ -189,9 +189,9 @@ public class FoWManager : MonoBehaviour
                 tile.IsExplored = explored;
 
                 if (tile.IsExplored)
-                    HandleTileBecomesExplored(tileX, tileY);
+                    HandleTileBecomesExplored(tileX, tileZ);
                 else
-                    HandleTileBecomesHidden(tileX, tileY);
+                    HandleTileBecomesHidden(tileX, tileZ);
             }
         }
     }
@@ -213,11 +213,11 @@ public class FoWManager : MonoBehaviour
         // need to remove the "visible light radius" for this guy and mark any nearby viewers as needing update
         if (scr != null)
         {
-            int currTileX, currTileY;
-            GetTileCoordinatesFromWorldPosition(viewer.transform.position, out currTileX, out currTileY);
+            int currTileX, currTileZ;
+            GetTileCoordinatesFromWorldPosition(viewer.transform.position, out currTileX, out currTileZ);
 
-            SetExplored(scr.ViewRadiusInTiles, (short)currTileX, (short)currTileY);
-            SetRedrawFlagForNearby(scr.ViewRadiusInTiles, (short)currTileX, (short)currTileY);
+            SetExplored(scr.ViewRadiusInTiles, (short)currTileX, (short)currTileZ);
+            SetRedrawFlagForNearby(scr.ViewRadiusInTiles, (short)currTileX, (short)currTileZ);
         }
 
         // now remove the viewer from our bag
@@ -235,45 +235,45 @@ public class FoWManager : MonoBehaviour
         _frameIsDirty = true;
     }
 
-    public bool IsValidTile(int px, int py)
+    public bool IsValidTile(int px, int pz)
     {
-        return px >= 0 && px < _numTilesX && py >= 0 && py < _numTilesY;
+        return px >= 0 && px < _numTilesX && pz >= 0 && pz < _numTilesZ;
     }
 
-    public FoWTileInfo GetTile(int tileX, int tileY)
+    public FoWTileInfo GetTile(int tileX, int tileZ)
     {
-        if (!IsValidTile(tileX, tileY))
+        if (!IsValidTile(tileX, tileZ))
             return null;
 
-        return _tiles[tileX, tileY];
+        return _tiles[tileX, tileZ];
     }
 
-    public void GetTileCoordinatesFromWorldPosition(Vector3 position, out int tileX, out int tileY)
+    public void GetTileCoordinatesFromWorldPosition(Vector3 position, out int tileX, out int tileZ)
     {
         var xOffset = position.x - WorldMin.x;
-        var yOffset = position.y - WorldMin.y;
+        var zOffset = position.z - WorldMin.z;
 
         tileX = (int)(xOffset / WorldUnitsPerTileSide);
-        tileY = (int)(yOffset / WorldUnitsPerTileSide);
+        tileZ = (int)(zOffset / WorldUnitsPerTileSide);
     }
 
     public FoWTileInfo GetTileFromWorldPosition(Vector3 position)
     {
-        int tileX, tileY;
+        int tileX, tileZ;
 
-        GetTileCoordinatesFromWorldPosition(position, out tileX, out tileY);
+        GetTileCoordinatesFromWorldPosition(position, out tileX, out tileZ);
 
-        return GetTile(tileX, tileY);
+        return GetTile(tileX, tileZ);
     }
 
     public void SetAllExplored(bool explored)
     {
         for (var x = 0; x < _numTilesX; x++)
         {
-            for (var y = 0; y < _numTilesY; y++)
+            for (var z = 0; z < _numTilesZ; z++)
             {
-                if (!_tiles[x, y].IsVisible)
-                    _tiles[x, y].IsExplored = explored;
+                if (!_tiles[x, z].IsVisible)
+                    _tiles[x, z].IsExplored = explored;
             }
         }
 
@@ -286,9 +286,9 @@ public class FoWManager : MonoBehaviour
 
         for (var x = 0; x < _numTilesX; x++)
         {
-            for (var y = 0; y < _numTilesY; y++)
+            for (var z = 0; z < _numTilesZ; z++)
             {
-                UpdateTile(x, y);
+                UpdateTile(x, z);
             }
         }
 
@@ -353,12 +353,13 @@ public class FoWManager : MonoBehaviour
                 _projector.enabled = true;
 
                 _projector.orthographic = true;
-                _projector.orthoGraphicSize = (_numTilesY * WorldUnitsPerTileSide * 0.5f);
-                _projector.aspectRatio = _numTilesX / (float)_numTilesY;
+                _projector.orthoGraphicSize = (_numTilesZ * WorldUnitsPerTileSide * 0.5f);
+                _projector.aspectRatio = _numTilesX / (float)_numTilesZ;
 
-                _projector.farClipPlane = (WorldMax.z - WorldMin.z) + 10;
+                _projector.farClipPlane = (WorldMax.y - WorldMin.y) + 10;
 
-                transform.position = new Vector3(WorldMin.x + ((WorldMax.x - WorldMin.x) * 0.5f), WorldMin.y + ((WorldMax.y - WorldMin.y) * 0.5f), WorldMax.z + 5);
+                transform.position = new Vector3(WorldMin.x + ((WorldMax.x - WorldMin.x) * 0.5f), WorldMax.y + 5,
+                    WorldMin.z + ((WorldMax.z - WorldMin.z) * 0.5f));
             }
         }
 
@@ -367,8 +368,8 @@ public class FoWManager : MonoBehaviour
         var planeTransform = transform.FindChild("FoWOverlay");
         if (planeTransform != null)
         {
-            planeTransform.position = new Vector3(WorldMin.x + ((WorldMax.x - WorldMin.x) * 0.5f), WorldMin.y + ((WorldMax.y - WorldMin.y) * 0.5f), WorldMax.z);
-            planeTransform.localScale = new Vector3((WorldMax.x - WorldMin.x) * 0.1f, (WorldMax.y - WorldMin.y) * 0.1f, 1f);
+            planeTransform.position = new Vector3(WorldMin.x + ((WorldMax.x - WorldMin.x) * 0.5f), WorldMax.y, WorldMin.z + ((WorldMax.z - WorldMin.z) * 0.5f));
+            planeTransform.localScale = new Vector3((WorldMax.x - WorldMin.x) * 0.1f, 1f, (WorldMax.z - WorldMin.z) * 0.1f);
 
             _plane = planeTransform.gameObject;
 
@@ -410,9 +411,9 @@ public class FoWManager : MonoBehaviour
     private void InitializeSizes()
     {
         var worldSizeX = WorldMax.x - WorldMin.x;
-        var worldSizeY = WorldMax.y - WorldMin.y;
+        var worldSizeZ = WorldMax.z - WorldMin.z;
         _numTilesX = (int)(worldSizeX / WorldUnitsPerTileSide);
-        _numTilesY = (int)(worldSizeY / WorldUnitsPerTileSide);
+        _numTilesZ = (int)(worldSizeZ / WorldUnitsPerTileSide);
     }
 
     private void InitializeColors()
@@ -428,11 +429,11 @@ public class FoWManager : MonoBehaviour
         ClampTextureResolution();
 
         var textureSizeX = _numTilesX * TextureResolution;
-        var textureSizeY = _numTilesY * TextureResolution;
+        var textureSizeZ = _numTilesZ * TextureResolution;
 
         if (_fogTexture == null || _fogTexture.filterMode != (TexturePointFilter ? FilterMode.Point : FilterMode.Trilinear))
         {
-            _fogTexture = new Texture2D(textureSizeX, textureSizeY, TextureFormat.ARGB32, false)
+            _fogTexture = new Texture2D(textureSizeX, textureSizeZ, TextureFormat.ARGB32, false)
             {
                 wrapMode = TextureWrapMode.Clamp,
                 filterMode = TexturePointFilter ? FilterMode.Point : FilterMode.Trilinear
@@ -440,17 +441,17 @@ public class FoWManager : MonoBehaviour
         }
         else
         {
-            if (_fogTexture.width != textureSizeX || _fogTexture.height != textureSizeY)
+            if (_fogTexture.width != textureSizeX || _fogTexture.height != textureSizeZ)
             {
-                _fogTexture.Resize(textureSizeX, textureSizeY);
+                _fogTexture.Resize(textureSizeX, textureSizeZ);
             }
         }
 
         for (var x = 0; x < textureSizeX; x++)
         {
-            for (var y = 0; y < textureSizeY; y++)
+            for (var z = 0; z < textureSizeZ; z++)
             {
-                _fogTexture.SetPixel(x, y, _colorHidden);
+                _fogTexture.SetPixel(x, z, _colorHidden);
             }
         }
         _fogTexture.Apply();
@@ -495,12 +496,12 @@ public class FoWManager : MonoBehaviour
 
     private void InitializeTiles()
     {
-        _tiles = new FoWTileInfo[_numTilesX, _numTilesY];
+        _tiles = new FoWTileInfo[_numTilesX, _numTilesZ];
         for (var x = 0; x < _numTilesX; x++)
         {
-            for (var y = 0; y < _numTilesY; y++)
+            for (var z = 0; z < _numTilesZ; z++)
             {
-                _tiles[x, y] = new FoWTileInfo();
+                _tiles[x, z] = new FoWTileInfo();
             }
         }
     }
@@ -537,9 +538,9 @@ public class FoWManager : MonoBehaviour
             var viewRadiusInTiles = unit.ViewRadiusInTiles;
 
             var tileX = unit.PreviousTileX;
-            var tileY = unit.PreviousTileY;
+            var tileZ = unit.PreviousTileZ;
 
-            SetVisible(viewRadiusInTiles, tileX, tileY);
+            SetVisible(viewRadiusInTiles, tileX, tileZ);
         }
 
         _fogTexture.Apply();
@@ -552,54 +553,54 @@ public class FoWManager : MonoBehaviour
     /// <param name="viewRadiusInTiles">How far to set visibility</param>
     /// <param name="tileX">X Position of viewer</param>
     /// <param name="tileZ">Z Position of viewer</param>
-    private void SetVisible(byte viewRadiusInTiles, short tileX, short tileY)
+    private void SetVisible(byte viewRadiusInTiles, short tileX, short tileZ)
     {
-        if (tileX < 0 || tileY < 0)
+        if (tileX < 0 || tileZ < 0)
             return;
 
         var dist = viewRadiusInTiles * viewRadiusInTiles;
 
         for (var dx = -viewRadiusInTiles; dx <= viewRadiusInTiles; dx++)
         {
-            for (var dy = -viewRadiusInTiles; dy <= viewRadiusInTiles; dy++)
+            for (var dz = -viewRadiusInTiles; dz <= viewRadiusInTiles; dz++)
             {
                 var px = tileX + dx;
-                var py = tileY + dy;
+                var pz = tileZ + dz;
 
-                if (!IsValidTile(px, py))
+                if (!IsValidTile(px, pz))
                     continue;
 
-                var v = new Vector2(dx, dy);
+                var v = new Vector2(dx, dz);
                 var sqrmag = v.sqrMagnitude;
                 var modsqrmag = sqrmag - (WorldUnitsPerTileSide * 0.5f);
                 if (modsqrmag <= dist)
                 {
-                    if (TileIsVisible(tileX, tileY, px, py))
+                    if (TileIsVisible(tileX, tileZ, px, pz))
                     {
                         if (FadeVisibility)
                         {
-                            var lightValue = Mathf.Lerp(0f, 1f - (modsqrmag / dist), 1f);
+                            var lightValue = Mathf.Lerp(0f, 1f, 1f - (modsqrmag / dist));
 
-                            if (lightValue > _tiles[px, py].SeenLightValue)
+                            if (lightValue > _tiles[px, pz].SeenLightValue)
                             {
-                                _tiles[px, py].SeenLightValue = lightValue;
+                                _tiles[px, pz].SeenLightValue = lightValue;
                             }
                         }
                         else
                         {
-                            _tiles[px, py].SeenLightValue = 1f;
+                            _tiles[px, pz].SeenLightValue = 1f;
                         }
 
-                        var firstVisible = !_tiles[px, py].IsExplored;
+                        var firstVisible = !_tiles[px, pz].IsExplored;
 
-                        _tiles[px, py].IsVisible = true;
-                        _tiles[px, py].IsExplored = true;
+                        _tiles[px, pz].IsVisible = true;
+                        _tiles[px, pz].IsExplored = true;
 
-                        UpdateTile(px, py);
+                        UpdateTile(px, pz);
 
                         if (firstVisible)
-                            HandleTileFirstVisible(px, py);
-                        HandleTileBecomesVisible(px, py);
+                            HandleTileFirstVisible(px, pz);
+                        HandleTileBecomesVisible(px, pz);
                     }
                 }
             }
@@ -613,37 +614,37 @@ public class FoWManager : MonoBehaviour
     /// <param name="viewRadiusInTiles">How far to set visibility</param>
     /// <param name="unitTileX">X Position of viewer</param>
     /// <param name="unitTileZ">Z Position of viewer</param>
-    private void SetExplored(byte viewRadiusInTiles, short unitTileX, short unitTileY)
+    private void SetExplored(byte viewRadiusInTiles, short unitTileX, short unitTileZ)
     {
-        if (unitTileX < 0 || unitTileY < 0)
+        if (unitTileX < 0 || unitTileZ < 0)
             return;
 
         var dist = viewRadiusInTiles * viewRadiusInTiles;
 
         for (var dx = -viewRadiusInTiles; dx <= viewRadiusInTiles; dx++)
         {
-            for (var dy = -viewRadiusInTiles; dy <= viewRadiusInTiles; dy++)
+            for (var dz = -viewRadiusInTiles; dz <= viewRadiusInTiles; dz++)
             {
                 var px = unitTileX + dx;
-                var py = unitTileY + dy;
+                var pz = unitTileZ + dz;
 
-                if (!IsValidTile(px, py))
+                if (!IsValidTile(px, pz))
                     continue;
 
-                var v = new Vector2(dx, dy);
+                var v = new Vector2(dx, dz);
                 var sqrmag = v.sqrMagnitude;
                 var modsqrmag = sqrmag - (WorldUnitsPerTileSide * 0.5f);
                 if (modsqrmag <= dist)
                 {
-                    if (TileIsVisible(unitTileX, unitTileY, px, py))
+                    if (TileIsVisible(unitTileX, unitTileZ, px, pz))
                     {
-                        _tiles[px, py].IsVisible = false;
-                        _tiles[px, py].SeenLightValue = 0f;
-                        _tiles[px, py].IsExplored = true;
+                        _tiles[px, pz].IsVisible = false;
+                        _tiles[px, pz].SeenLightValue = 0f;
+                        _tiles[px, pz].IsExplored = true;
 
-                        UpdateTile(px, py);
+                        UpdateTile(px, pz);
 
-                        HandleTileBecomesExplored(px, py);
+                        HandleTileBecomesExplored(px, pz);
                     }
                 }
             }
@@ -667,20 +668,20 @@ public class FoWManager : MonoBehaviour
 
             //
 
-            int currTileX, currTileY;
-            GetTileCoordinatesFromWorldPosition(viewer.transform.position, out currTileX, out currTileY);
+            int currTileX, currTileZ;
+            GetTileCoordinatesFromWorldPosition(viewer.transform.position, out currTileX, out currTileZ);
 
-            if (force || currTileX != scr.PreviousTileX || currTileY != scr.PreviousTileY || scr.PreviousRadiusInTiles != scr.ViewRadiusInTiles)
+            if (force || currTileX != scr.PreviousTileX || currTileZ != scr.PreviousTileZ || scr.PreviousRadiusInTiles != scr.ViewRadiusInTiles)
             {
                 _frameIsDirty = true;
                 scr.HasChanged = true;
 
-                SetExplored( scr.PreviousRadiusInTiles, scr.PreviousTileX, scr.PreviousTileY );
+                SetExplored(scr.PreviousRadiusInTiles, scr.PreviousTileX, scr.PreviousTileZ);
 
-                SetRedrawFlagForNearby( scr.ViewRadiusInTiles, scr.PreviousTileX, scr.PreviousTileY );
+                SetRedrawFlagForNearby(scr.ViewRadiusInTiles, scr.PreviousTileX, scr.PreviousTileZ);
 
                 scr.PreviousTileX = (short)currTileX;
-                scr.PreviousTileY = (short)currTileY;
+                scr.PreviousTileZ = (short)currTileZ;
                 scr.PreviousRadiusInTiles = scr.ViewRadiusInTiles;
             }
         }
@@ -703,7 +704,7 @@ public class FoWManager : MonoBehaviour
 
             //
 
-            if ( Overlaps( previousTileX, previousTileZ, viewRadiusInTiles, scr.PreviousTileX, scr.PreviousTileY,
+            if (Overlaps(previousTileX, previousTileZ, viewRadiusInTiles, scr.PreviousTileX, scr.PreviousTileZ,
                 scr.ViewRadiusInTiles))
             {
                 scr.HasChanged = true;
@@ -711,10 +712,10 @@ public class FoWManager : MonoBehaviour
         }
     }
 
-    private bool Overlaps(short x1, short y1, byte r1, short x2, short y2, byte r2)
+    private bool Overlaps(short x1, short z1, byte r1, short x2, short z2, byte r2)
     {
         var d = r1 + r2;
-        return (Math.Abs(x1 - x2) < d) && (Math.Abs(y1 - y2) < d);
+        return (Math.Abs(x1 - x2) < d) && (Math.Abs(z1 - z2) < d);
     }
 
     private void ResetViewers()
@@ -738,20 +739,20 @@ public class FoWManager : MonoBehaviour
         }
     }
 
-    private bool TileIsVisible(int fromTileX, int fromTileY, int toTileX, int toTileY)
+    private bool TileIsVisible(int fromTileX, int fromTileZ, int toTileX, int toTileZ)
     {
         if (_callbacks != null && _callbacks.VisibilityTest != null)
-            return _callbacks.VisibilityTest(fromTileX, fromTileY, toTileX, toTileY);
+            return _callbacks.VisibilityTest(fromTileX, fromTileZ, toTileX, toTileZ);
 
         return true;
     }
 
-    private void UpdateTile(int x, int y)
+    private void UpdateTile(int x, int z)
     {
-        if (!IsValidTile(x, y))
+        if (!IsValidTile(x, z))
             return;
 
-        var tile = _tiles[x, y];
+        var tile = _tiles[x, z];
         if (tile == null)
             return;
 
@@ -767,20 +768,20 @@ public class FoWManager : MonoBehaviour
         }
         // else lightColor = _colorHidden;
 
-        SetTexturePixel(x, y, lightColor);
+        SetTexturePixel(x, z, lightColor);
     }
 
-    private void SetTexturePixel(int x, int y, Color32 lightColor)
+    private void SetTexturePixel(int x, int z, Color32 lightColor)
     {
         ClampTextureResolution();
 
         for (var dx = 0; dx < TextureResolution; dx++)
         {
             var px = (x * TextureResolution);
-            for (var dy = 0; dy < TextureResolution; dy++)
+            for (var dz = 0; dz < TextureResolution; dz++)
             {
-                var pz = (y * TextureResolution);
-                _fogTexture.SetPixel(px + dx, pz + dy, lightColor);
+                var pz = (z * TextureResolution);
+                _fogTexture.SetPixel(px + dx, pz + dz, lightColor);
             }
         }
     }
@@ -803,56 +804,56 @@ public class FoWManager : MonoBehaviour
     /// Callback utility method
     /// </summary>
     /// <param name="x">x position</param>
-    /// <param name="y">y position</param>
-    private void HandleTileBecomesVisible(int x, int y)
+    /// <param name="z">z position</param>
+    private void HandleTileBecomesVisible(int x, int z)
     {
         if (_callbacks == null)
             return;
 
         if (_callbacks.OnTileBecomesVisible != null)
-            _callbacks.OnTileBecomesVisible(x, y);
+            _callbacks.OnTileBecomesVisible(x, z);
     }
 
     /// <summary>
     /// Callback utility method
     /// </summary>
     /// <param name="x">x position</param>
-    /// <param name="y">y position</param>
-    private void HandleTileFirstVisible(int x, int y)
+    /// <param name="z">z position</param>
+    private void HandleTileFirstVisible(int x, int z)
     {
         if (_callbacks == null)
             return;
 
         if (_callbacks.OnTileFirstVisible != null)
-            _callbacks.OnTileFirstVisible(x, y);
+            _callbacks.OnTileFirstVisible(x, z);
     }
 
     /// <summary>
     /// Callback utility method
     /// </summary>
     /// <param name="x">x position</param>
-    /// <param name="y">y position</param>
-    private void HandleTileBecomesExplored(int x, int y)
+    /// <param name="z">z position</param>
+    private void HandleTileBecomesExplored(int x, int z)
     {
         if (_callbacks == null)
             return;
 
         if (_callbacks.OnTileBecomesExplored != null)
-            _callbacks.OnTileBecomesExplored(x, y);
+            _callbacks.OnTileBecomesExplored(x, z);
     }
 
     /// <summary>
     /// Callback utility method
     /// </summary>
     /// <param name="x">x position</param>
-    /// <param name="y">y position</param>
-    private void HandleTileBecomesHidden(int x, int y)
+    /// <param name="z">z position</param>
+    private void HandleTileBecomesHidden(int x, int z)
     {
         if (_callbacks == null)
             return;
 
         if (_callbacks.OnTileBecomesHidden != null)
-            _callbacks.OnTileBecomesHidden(x, y);
+            _callbacks.OnTileBecomesHidden(x, z);
     }
 
     public void HandleNonPlayerUnitBecomesVisible(GameObject unit)

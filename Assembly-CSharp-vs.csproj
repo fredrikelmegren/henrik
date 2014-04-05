@@ -46,25 +46,25 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\Demo.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoCameraController.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoChunk.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoEnemy.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoEnemyTower.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoMinimap.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoPlayer.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoPlayerTower.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoTile.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoTileType.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Demo\Scripts\DemoWander.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWGhost.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWManager.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWNonPlayerUnit.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWPlayerUnit.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWTileInfo.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\FoWTileState.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Scripts\GameObjectBag.cs" />
-     <Compile Include="assets\Externals\TilesOfWar\Shaders\FoWPro.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\Demo.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoCameraController.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoChunk.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoEnemy.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoEnemyTower.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoMinimap.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoPlayer.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoPlayerTower.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoTile.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoTileType.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Demo\Scripts\DemoWander.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWGhost.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWManager.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWNonPlayerUnit.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWPlayerUnit.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWTileInfo.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\FoWTileState.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Scripts\GameObjectBag.cs" />
+     <Compile Include="assets\Externals\TilesOfWarXY\Shaders\FoWPro.cs" />
      <Compile Include="assets\Scripts\ActionInformer.cs" />
      <Compile Include="assets\Scripts\BackgroundParallax.cs" />
      <Compile Include="assets\Scripts\BackgroundPropSpawner.cs" />
@@ -76,7 +76,6 @@
      <Compile Include="assets\Scripts\Door.cs" />
      <Compile Include="assets\Scripts\DoorTrigger.cs" />
      <Compile Include="assets\Scripts\Enemy.cs" />
-     <Compile Include="assets\Scripts\FogOfWarPlayer.cs" />
      <Compile Include="assets\Scripts\FollowPlayer.cs" />
      <Compile Include="assets\Scripts\HealthPickup.cs" />
      <Compile Include="assets\Scripts\MouseOver.cs" />
@@ -130,9 +129,9 @@
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\GlowEffectDownsample.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CreaseApply.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ChromaticAberrationShader.shader" />
-     <None Include="assets\Externals\TilesOfWar\Shaders\FoWProjector.shader" />
+     <None Include="assets\Externals\TilesOfWarXY\Shaders\FoWProjector.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\GlobalFog.shader" />
-     <None Include="assets\Externals\TilesOfWar\Shaders\FoWOverlay.shader" />
+     <None Include="assets\Externals\TilesOfWarXY\Shaders\FoWOverlay.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Luminance.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrectionSelective.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\Bokeh34.shader" />
@@ -157,7 +156,7 @@
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Tonemapper.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BrightPassFilter.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA2.shader" />
-     <None Include="assets\Externals\TilesOfWar\Shaders\FoWPro.shader" />
+     <None Include="assets\Externals\TilesOfWarXY\Shaders\FoWPro.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrection3DLut.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\LensFlareCreate.shader" />
      <None Include="assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\EdgeDetectNormals.shader" />
