@@ -76,6 +76,7 @@
      <Compile Include="assets\Scripts\Door.cs" />
      <Compile Include="assets\Scripts\DoorTrigger.cs" />
      <Compile Include="assets\Scripts\Enemy.cs" />
+     <Compile Include="assets\Scripts\FogOfWarPlayer.cs" />
      <Compile Include="assets\Scripts\FollowPlayer.cs" />
      <Compile Include="assets\Scripts\HealthPickup.cs" />
      <Compile Include="assets\Scripts\MouseOver.cs" />
